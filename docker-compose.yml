@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  # Application
+  app:
+    build:
+      context: ./.docker/services/app
+      dockerfile: app.dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./src:/var/www
+    container_name: "karma8-app"
+    depends_on:
+      - database
+
+  # Database
+  database:
+    image: mysql:8.0.25
+    platform: linux/x86_64
+    volumes:
+      - ./.docker/volumes/mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: "karma8"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_PASSWORD: "password"
+      MYSQL_USER: "karma8"
+    ports:
+      - "3306:3306"
+    container_name: "karma8-db"
