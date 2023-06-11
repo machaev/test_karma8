@@ -2,15 +2,22 @@
 
 function processUser($user, PDO $pdo): void
 {
-    if (false === $user['checked']) {
+    logMessage("Processing user {$user['id']}");
+
+    if (!$user['checked']) {
         $user['valid'] = check_email($user['email']);
         $user['checked'] = 1;
+        // maybe need to do a multi-query to the database to update users, to speed up db queries (reindex)
         updateUser($pdo, $user);
+//        logMessage("Updated valid status for user {$user['id']}");
     }
 
-    if (true === $user['valid']) {
+    if ($user['valid']) {
         send_email($user['email'], 'karma8@gmail.com', 'Your subscription will end soon', 'your subscription will end soon');
+//        logMessage("Sent email to user {$user['id']}");
     }
+
+    logMessage("Successful processing user {$user['id']}");
 }
 
 function check_email($email): bool
@@ -50,8 +57,9 @@ function updateUser(PDO $pdo, array $user): void
 }
 
 // get all users whose validts parameter expires in 1 and 3 days
-function getUsersForEmailNotification(PDO $pdo): false|array
+function getUsersForEmailNotification(): false|array
 {
+    $pdo = getDbConnection();
     $sql = "SELECT id, username, email, valid, checked FROM users WHERE 
                         confirmed = 1 AND
                         (valid = 1 OR checked = 0) AND 
