@@ -1,10 +1,7 @@
 <?php
 
-$pdo = require_once 'pdo.php';
-
-/**
- * @var PDO $pdo
- */
+require_once 'pdo.php';
+$pdo = getDbConnection();
 
 // remove all tables
 $dbName = $pdo->query('SELECT database()')->fetchColumn();

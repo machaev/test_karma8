@@ -1,9 +1,7 @@
 <?php
 
-/**
- * @var PDO $pdo
- */
-$pdo = require_once 'pdo.php';
+require_once 'pdo.php';
+$pdo = getDbConnection();
 
 $validts = array_fill(0, 100, null);
 for ($i = 0; $i < 20; $i++) {
